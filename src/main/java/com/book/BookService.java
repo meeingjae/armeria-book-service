@@ -2,6 +2,7 @@ package com.book;
 
 import java.util.NoSuchElementException;
 
+import com.book.annotation.BookProduceType;
 import com.book.handler.NoSuchElementExceptionHandler;
 
 import com.linecorp.armeria.common.HttpResponse;
@@ -11,10 +12,12 @@ import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.Param;
 import com.linecorp.armeria.server.annotation.Post;
 import com.linecorp.armeria.server.annotation.RequestObject;
+import com.linecorp.armeria.server.annotation.ResponseConverter;
 
 public class BookService {
 
     @Get("/books")
+    @BookProduceType
     public HttpResponse findAll() {
         return HttpResponse.ofJson(BookRepository.findAll());
     }
@@ -34,6 +37,7 @@ public class BookService {
         return HttpResponse.ofJson(BookRepository.createUpdateBook(book));
     }
 
+    @ResponseConverter(BookResponseConverter.class)
     @ExceptionHandler(NoSuchElementExceptionHandler.class)
     @Delete("/book/:id")
     public HttpResponse deleteById(@Param long id) {
