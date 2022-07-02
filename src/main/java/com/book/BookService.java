@@ -13,6 +13,7 @@ import com.linecorp.armeria.server.annotation.Param;
 import com.linecorp.armeria.server.annotation.Post;
 import com.linecorp.armeria.server.annotation.RequestObject;
 import com.linecorp.armeria.server.annotation.ResponseConverter;
+import com.linecorp.armeria.server.annotation.ResponseConverters;
 
 public class BookService {
 
@@ -37,13 +38,15 @@ public class BookService {
         return HttpResponse.ofJson(BookRepository.createUpdateBook(book));
     }
 
-    @ResponseConverter(BookResponseConverter.class)
-    @ExceptionHandler(NoSuchElementExceptionHandler.class)
+    @ResponseConverters({
+            @ResponseConverter(BookResponseConverter.class),
+            @ResponseConverter(BookDeletedFailedConverter.class)
+    })
     @Delete("/book/:id")
     public HttpResponse deleteById(@Param long id) {
         Book book = BookRepository.deleteById(id);
         if (book == null) {
-            throw new NoSuchElementException(id + " book delete failed");
+            return HttpResponse.ofJson(new BookDeleteFailedResponse("failed", "this is cuase"));
         }
         return HttpResponse.ofJson(book);
     }
