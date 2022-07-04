@@ -1,16 +1,19 @@
 package com.book;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.linecorp.armeria.server.annotation.Default;
 import com.linecorp.armeria.server.annotation.Param;
 
 public class Book {
     @Param("id")
-    private final long id;
+    private long id;
     @Param("name")
     @Default("default name")
-    private final String name;
+    private String name;
     @Param("page")
-    private final long page;
+    private long page;
 
     public Book(long id, String name, long page) {
         this.id = id;
@@ -28,5 +31,12 @@ public class Book {
 
     public long getPage() {
         return page;
+    }
+
+    public String toJson() {
+        String json = "";
+        try { json = new ObjectMapper().writeValueAsString(this); }
+        catch (JsonProcessingException ignored) { }
+        return json;
     }
 }

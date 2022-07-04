@@ -43,8 +43,8 @@ public class BookService {
 
     @Produces(MediaTypeNames.JSON)
     @Consumes(MediaTypeNames.JSON)
-    @ProducesJson
-    @ConsumesJson
+//    @ProducesJson
+//    @ConsumesJson
     @Post("/book")
     public HttpResponse createBook(Book book) {
         return HttpResponse.ofJson(BookRepository.createUpdateBook(book));
